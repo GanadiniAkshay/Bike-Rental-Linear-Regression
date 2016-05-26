@@ -3,12 +3,12 @@ import random
 import numpy as np
 
 # Load the data from CSV files and extract and return the features and labels
-def load_data(file_name):
-    with open(file_name,'rb') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+def load_data(file_path):
+    with open(file_path,'rb') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',', quotechar='|')
         feature_lists = []
         label_lists = []
-        for row in spamreader:
+        for row in reader:
             label_lists.append(row[-1])
             row = row[2:-3]
             feature_lists.append(row)
@@ -36,7 +36,7 @@ def cost_function(features,labels,thetas):
     cost = np.sum(cost)/(2*len(features))
     return cost
 
-features_day,labels_day = load_data('day.csv')
+features_day,labels_day = load_data('./Data/Training/day.csv')
 thetas = get_thetas()
 cost = cost_function(features_day,labels_day,thetas)
 print cost
