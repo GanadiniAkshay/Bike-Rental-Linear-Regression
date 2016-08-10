@@ -1,9 +1,12 @@
 import csv
 import random
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 m = 0
+
+costs = []
+epsilons = []
 
 # Load the data from CSV files and extract and return the features and labels
 def load_data(file_path):
@@ -37,10 +40,13 @@ def get_hypothesis(features,labels,thetas):
 # Calculate the cost function value for a given hypothesis
 def change(features,labels,thetas):
     global m
+    global costs
     hypothesis = get_hypothesis(features,labels,thetas)
     cost = hypothesis - labels
+    # print np.sum(cost)
+    costs.append(abs(np.sum(cost)))
     change_temp = cost.transpose() * features
-    change = np.dot((0.5/m), change_temp)
+    change = np.dot((0.03*0.5/m), change_temp)
     return change.transpose()
 
 # features_day,labels_day = load_data('./Data/Training/day.csv')
@@ -50,5 +56,31 @@ def change(features,labels,thetas):
 
 features,labels = load_data('./Data/Training/day.csv')
 thetas = get_thetas()
-change_theta = change(features,labels,thetas)
+
+while True:
+    change_theta = change(features,labels,thetas)
+    # print "Iteration " + str(i)
+    # print "\n\n\n"
+    # print "------------------------------------------------------------------"
+    old_thetas = thetas
+    thetas = np.subtract(thetas,change_theta)
+    #print abs(np.sum(np.subtract(old_thetas,thetas)))
+    epsilons.append(abs(np.sum(np.subtract(old_thetas,thetas))))
+    if (abs(np.sum(np.subtract(old_thetas,thetas))) < 0.00000000000005):
+        print abs(np.sum(np.subtract(old_thetas,thetas)))
+        break
+    #print thetas
+
+hypothesis = get_hypothesis(features,labels,thetas)
+cost = hypothesis - labels
+print np.sum(cost)
+print thetas
+
+
+plt.plot(epsilons)
+plt.ylabel('Costs')
+plt.show()
+
+# print costs
+
 
